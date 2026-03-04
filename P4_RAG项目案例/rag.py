@@ -3,38 +3,50 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough, RunnableWithMessageHistory, RunnableLambda
 from file_history_store import get_history
 from vector_stores import VectorStoreService
-from langchain_community.embeddings import DashScopeEmbeddings
+from langchain_community.embeddings import DashScopeEmbeddings, OllamaEmbeddings
 import config_data as config
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_community.chat_models.tongyi import ChatTongyi
+from langchain_ollama import ChatOllama
 
 
 def print_prompt(prompt):
-    print("="*20)
+    print("=" * 20)
     print(prompt.to_string())
-    print("="*20)
+    print("=" * 20)
 
     return prompt
 
 
 class RagService(object):
     def __init__(self):
+        # 根据配置选择使用本地模型还是云端模型
+        if config.use_local_model:
+            # 使用 Ollama本地/远程嵌入模型和聊天模型
+            embedding = OllamaEmbeddings(
+                model=config.local_embedding_model,
+                base_url=config.ollama_base_url
+            )
+            self.chat_model = ChatOllama(model=config.local_chat_model, base_url=config.ollama_base_url)
+        else:
+            # 使用阿里云 DashScope 云端嵌入模型和聊天模型
+            embedding = DashScopeEmbeddings(
+                model=config.embedding_model_name,
+                dashscope_api_key=config.dashscope_api_key
+            )
+            self.chat_model = ChatTongyi(model=config.chat_model_name)
 
-        self.vector_service = VectorStoreService(
-            embedding=DashScopeEmbeddings(model=config.embedding_model_name)
-        )
+        self.vector_service = VectorStoreService(embedding=embedding)
 
         self.prompt_template = ChatPromptTemplate.from_messages(
             [
                 ("system", "以我提供的已知参考资料为主，"
-                 "简洁和专业的回答用户问题。参考资料:{context}。"),
+                           "简洁和专业的回答用户问题。参考资料:{context}。"),
                 ("system", "并且我提供用户的对话历史记录，如下："),
                 MessagesPlaceholder("history"),
                 ("user", "请回答用户提问：{input}")
             ]
         )
-
-        self.chat_model = ChatTongyi(model=config.chat_model_name)
 
         self.chain = self.__get_chain()
 
@@ -64,10 +76,11 @@ class RagService(object):
             return new_value
 
         chain = (
-            {
-                "input": RunnablePassthrough(),
-                "context": RunnableLambda(format_for_retriever) | retriever | format_document
-            } | RunnableLambda(format_for_prompt_template) | self.prompt_template | print_prompt | self.chat_model | StrOutputParser()
+                {
+                    "input": RunnablePassthrough(),
+                    "context": RunnableLambda(format_for_retriever) | retriever | format_document
+                } | RunnableLambda(
+            format_for_prompt_template) | self.prompt_template | print_prompt | self.chat_model | StrOutputParser()
         )
 
         conversation_chain = RunnableWithMessageHistory(
@@ -82,12 +95,7 @@ class RagService(object):
 
 if __name__ == '__main__':
     # session id 配置
-    session_config = {
-        "configurable": {
-            "session_id": "user_001",
-        }
-    }
+    session_config = config.session_config
 
     res = RagService().chain.invoke({"input": "针织毛衣如何保养？"}, session_config)
     print(res)
-
