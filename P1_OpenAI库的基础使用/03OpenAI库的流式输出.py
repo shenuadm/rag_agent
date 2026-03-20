@@ -14,7 +14,7 @@ response = client.chat.completions.create(
         {"role": "assistant", "content": "好的，我是编程专家，并且话非常多，你要问什么？"},
         {"role": "user", "content": "输出1-10的数字，使用python代码"}
     ],
-    stream=True     # 开启了流式输出的功能
+    stream=True  # 开启了流式输出的功能
 )
 
 # 3. 处理结果
@@ -22,6 +22,6 @@ response = client.chat.completions.create(
 for chunk in response:
     print(
         chunk.choices[0].delta.content,
-        end=" ",        # 每一段之间以空格分隔
-        flush=True      # 立刻刷新缓冲区
+        end="",  # 每一段之间以空格分隔
+        flush=True  # 立刻刷新缓冲区
     )

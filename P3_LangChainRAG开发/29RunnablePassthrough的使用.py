@@ -16,7 +16,10 @@ def print_prompt(prompt):
     return prompt
 
 
-model = ChatTongyi(model="qwen3-max")
+model = ChatTongyi(
+    model="qwen3-max",
+    dashscope_api_key="sk-bca3c9259bce4a6ebf60f9f3f0372025"
+)
 prompt = ChatPromptTemplate.from_messages(
     [
         ("system", "以我提供的已知参考资料为主，简洁和专业的回答用户问题。参考资料:{context}。"),
@@ -24,7 +27,10 @@ prompt = ChatPromptTemplate.from_messages(
     ]
 )
 
-vector_store = InMemoryVectorStore(embedding=DashScopeEmbeddings(model="text-embedding-v4"))
+vector_store = InMemoryVectorStore(embedding=DashScopeEmbeddings(
+    model="text-embedding-v4",
+    dashscope_api_key="sk-bca3c9259bce4a6ebf60f9f3f0372025")
+)
 
 # 准备一下资料（向量库的数据）
 # add_texts 传入一个 list[str]
@@ -48,9 +54,11 @@ def format_func(docs: list[Document]):
 
     return formatted_str
 
+
 # chain
 chain = (
-    {"input": RunnablePassthrough(), "context": retriever | format_func} | prompt | print_prompt | model | StrOutputParser()
+        {"input": RunnablePassthrough(),
+         "context": retriever | format_func} | prompt | print_prompt | model | StrOutputParser()
 )
 
 res = chain.invoke(input_text)

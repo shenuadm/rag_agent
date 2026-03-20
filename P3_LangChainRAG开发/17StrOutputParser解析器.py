@@ -3,7 +3,10 @@ from langchain_core.prompts import PromptTemplate
 from langchain_community.chat_models.tongyi import ChatTongyi
 
 parser = StrOutputParser()
-model = ChatTongyi(model="qwen3-max")
+model = ChatTongyi(
+    model="qwen3-max",
+    dashscope_api_key="sk-bca3c9259bce4a6ebf60f9f3f0372025"
+)
 prompt = PromptTemplate.from_template(
     "我邻居姓：{lastname}，刚生了{gender}，请起名，仅告知我名字无需其它内容。"
 )

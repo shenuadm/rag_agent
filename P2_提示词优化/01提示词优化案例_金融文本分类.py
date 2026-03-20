@@ -2,7 +2,6 @@ from openai import OpenAI
 
 # 1. 获取client对象，OpenAI类对象
 client = OpenAI(
-    # base_url="https://dashscope.aliyuncs.com/compatible-mode/v1"
     base_url="http://192.168.1.80:11434/v1",
     api_key=""
 )
@@ -28,7 +27,7 @@ questions = [
 """
 [
     {"role": "system",      "content": "你是金融专家，将文本分类为['新闻报道', '财务报道', '公司公告', '分析师报告']，不清楚的分类为'不清楚类别' 下面有示例："},
-     
+
     {"role": "user",        "content": "今日，央行发布公告宣布降............."},
     {"role": "assistant",   "content": "新闻报道"},
     {"role": "user",        "content": "ABC公司今日发布公告称，已成功完成对XYZ公司股................."},
@@ -54,7 +53,6 @@ for key, value in examples_data.items():
 # 向模型提问
 for q in questions:
     response = client.chat.completions.create(
-        # model="qwen3-max",
         model="qwen3:4b",
         messages=messages + [{"role": "user", "content": f"按照示例，回答这段文本的分类类别：{q}"}]
     )

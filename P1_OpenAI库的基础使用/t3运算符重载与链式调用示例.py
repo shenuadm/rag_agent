@@ -29,5 +29,6 @@ if __name__ == "__main__":
     c = Test("c")
 
     d = a | b | c
+
     d.run()
     print(type(d))

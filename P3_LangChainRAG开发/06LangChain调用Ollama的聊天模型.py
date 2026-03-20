@@ -2,7 +2,10 @@ from langchain_ollama import ChatOllama
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 
 # 得到模型对象, qwen3-max就是聊天模型
-model = ChatOllama(model="qwen3:4b")
+model = ChatOllama(
+    base_url="http://192.168.1.80:11434",
+    model="qwen3:4b"
+)
 
 # 准备消息列表
 messages = [

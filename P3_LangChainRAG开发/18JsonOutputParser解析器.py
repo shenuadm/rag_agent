@@ -7,7 +7,10 @@ str_parser = StrOutputParser()
 json_parser = JsonOutputParser()
 
 # 模型创建
-model = ChatTongyi(model="qwen3-max")
+model = ChatTongyi(
+    model="qwen3-max",
+    dashscope_api_key="sk-bca3c9259bce4a6ebf60f9f3f0372025"
+)
 
 # 第一个提示词模板
 first_prompt = PromptTemplate.from_template(
@@ -25,4 +28,3 @@ chain = first_prompt | model | json_parser | second_prompt | model | str_parser
 
 for chunk in chain.stream({"lastname": "张", "gender": "女儿"}):
     print(chunk, end="", flush=True)
-

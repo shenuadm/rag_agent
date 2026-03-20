@@ -19,9 +19,11 @@ history_data = [
 # StringPromptValue    to_string()
 prompt_text = chat_prompt_template.invoke({"history": history_data}).to_string()
 
-model = ChatTongyi(model="qwen3-max")
+model = ChatTongyi(
+    model="qwen3-max",
+    dashscope_api_key="sk-bca3c9259bce4a6ebf60f9f3f0372025"
+)
 
 res = model.invoke(prompt_text)
 
 print(res.content, type(res))
-

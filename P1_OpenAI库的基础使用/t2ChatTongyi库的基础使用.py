@@ -17,7 +17,10 @@ history_data = [
     ("ai", "锄禾日当午，汗滴禾下锄，谁知盘中餐，粒粒皆辛苦"),
 ]
 
-model = ChatTongyi(model="qwen3-max")
+model = ChatTongyi(
+    model="qwen3-max",
+    dashscope_api_key="sk-bca3c9259bce4a6ebf60f9f3f0372025"
+)
 
 chain: RunnableSerializable = chat_prompt_template | model
 print(type(chain))
@@ -29,5 +32,3 @@ print(res.content)
 # Runnable接口，stream执行
 for chunk in chain.stream({"history": history_data}):
     print(chunk.content, end="", flush=True)
-
-

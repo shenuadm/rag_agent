@@ -8,8 +8,8 @@ loader = TextLoader(
 docs = loader.load()
 
 splitter = RecursiveCharacterTextSplitter(
-    chunk_size=500,     # 分段的最大字符数
-    chunk_overlap=50,   # 分段之间允许重叠的字符数
+    chunk_size=500,  # 分段的最大字符数
+    chunk_overlap=50,  # 分段之间允许重叠的字符数
     # 文本分段依据
     separators=["\n\n", "\n", "。", "！", "？", ".", "!", "?", " ", ""],
     # 字符统计依据（函数）
@@ -17,3 +17,7 @@ splitter = RecursiveCharacterTextSplitter(
 )
 
 split_docs = splitter.split_documents(docs)
+
+# 查看分段结果
+for i, doc in enumerate(split_docs):
+    print(f"{i} - {doc.page_content}")

@@ -6,11 +6,13 @@ from langchain_community.document_loaders import CSVLoader
 # 确保 langchain-chroma chromadb 这两个库安装了的，没有的话请pip install
 
 vector_store = Chroma(
-    collection_name="test",     # 当前向量存储起个名字，类似数据库的表名称
-    embedding_function=DashScopeEmbeddings(),       # 嵌入模型
-    persist_directory="./chroma_db"     # 指定数据存放的文件夹
+    collection_name="test",  # 当前向量存储起个名字，类似数据库的表名称
+    embedding_function=DashScopeEmbeddings(
+        model="text-embedding-v4",
+        dashscope_api_key="sk-bca3c9259bce4a6ebf60f9f3f0372025"
+    ),  # 嵌入模型
+    persist_directory="./chroma_db"  # 指定数据存放的文件夹
 )
-
 
 # loader = CSVLoader(
 #     file_path="./data/info.csv",
@@ -32,7 +34,7 @@ vector_store = Chroma(
 # 检索 返回类型list[Document]
 result = vector_store.similarity_search(
     "Python是不是简单易学呀",
-    3,        # 检索的结果要几个
+    3,  # 检索的结果要几个
     filter={"source": "黑马程序员"}
 )
 

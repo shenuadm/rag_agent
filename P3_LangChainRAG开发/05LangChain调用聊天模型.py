@@ -2,7 +2,10 @@ from langchain_community.chat_models.tongyi import ChatTongyi
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 
 # 得到模型对象, qwen3-max就是聊天模型
-model = ChatTongyi(model="qwen3-max")
+model = ChatTongyi(
+    model="qwen3-max",
+    dashscope_api_key="sk-bca3c9259bce4a6ebf60f9f3f0372025",
+)
 
 # 准备消息列表
 messages = [

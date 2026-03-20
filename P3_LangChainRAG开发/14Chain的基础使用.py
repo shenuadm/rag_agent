@@ -16,7 +16,10 @@ history_data = [
     ("ai", "锄禾日当午，汗滴禾下锄，谁知盘中餐，粒粒皆辛苦"),
 ]
 
-model = ChatTongyi(model="qwen3-max")
+model = ChatTongyi(
+    model="qwen3-max",
+    dashscope_api_key="sk-bca3c9259bce4a6ebf60f9f3f0372025"
+)
 
 # 组成链，要求每一个组件都是Runnable接口的子类
 chain = chat_prompt_template | model
